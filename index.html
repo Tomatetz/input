@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles/main.min.css">
+    <script src="scripts/test.js"></script>
+    <title></title>
+</head>
+<body>
+<div class="input_wrapper" id="input_wrapper" placeholder="">
+    <input type="text" class="form_input" placeholder="Введите имя друга или email" id="form_input"
+           onkeypress="inputChange(event)" onblur="this.focused=''">
+    <br class="clear">
+
+    <div class="users_list" id="users_list" style="">
+        <div class="scrollbar" style="">
+            <!--<div class="fc_scrollbar_inner" style="height: 55px; margin-top: 2px;"></div>-->
+        </div>
+        <div class="users" style="">
+
+        </div>
+        <div class="wdd_bottom1"></div>
+        <div class="wdd_bottom2"></div>
+    </div>
+</div>
+</body>
+
+<script src="scripts/jquery.min.js"></script>
+<script src="users.js"></script>
+<script src="scripts/app.js"></script>
+</html>
