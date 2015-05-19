@@ -3,20 +3,24 @@
 <head lang="en">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/main.min.css">
-    <script src="scripts/test.js"></script>
+    <script src="dictionaries.js"></script>
     <title></title>
 </head>
 <body>
 <div class="input_wrapper" id="input_wrapper" placeholder="">
     <div class="input_area">
         <input type="text" class="form_input" placeholder="Введите имя друга или email" id="form_input">
+        <div id="u_empty_wrapper">
+            <div class="users_empty" id="users_empty" style="overflow: hidden;">Пользователь не найден</div>
+        </div>
+
     </div>
 
     <div class="users_list" id="users_list" style="">
         <div class="scrollbar" style="">
             <!--<div class="fc_scrollbar_inner" style="height: 55px; margin-top: 2px;"></div>-->
         </div>
-        <div class="users" style="">
+        <div class="users" id="users" style="">
 
         </div>
         <div class="wdd_bottom1"></div>

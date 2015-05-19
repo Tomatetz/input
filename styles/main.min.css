@@ -22,6 +22,19 @@ body {
 .input_wrapper .input_area {
   padding: 2px;
 }
+.input_wrapper .input_area .users_empty {
+  border: solid #C0CAD5;
+  border-width: 0px 1px 1px;
+  width: 100%;
+  left: -1px;
+  height: 26px;
+  position: absolute;
+  line-height: 28px;
+  text-align: center;
+  background: #F1F1F1;
+  top: 29px;
+  display: none;
+}
 .form_input {
   outline: 0;
   background-color: transparent;
@@ -31,9 +44,6 @@ body {
   font-size: 11px;
   color: #777777;
   padding: 4px 6px 6px;
-}
-.form_input:focus .input_area {
-  border-bottom: 1px solid #C0CAD5;
 }
 .users_list {
   display: none;
@@ -48,7 +58,7 @@ body {
 }
 .users_list .users {
   max-height: 210px;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 .users_list .users .user {
   cursor: pointer;

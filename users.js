@@ -12,5 +12,12 @@ var users_collection = [
         user_surname: 'Васильевич',
         user_pic: 'styles/img/ivan4.jpg',
         user_edu: 'СПбГУ'
+    },
+    {
+        user_id: 2,
+        user_name: 'Иван',
+        user_surname: 'Фаацуч',
+        user_pic: 'styles/img/ivan4.jpg',
+        user_edu: 'СПбГУ'
     }
 ]

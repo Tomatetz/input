@@ -21,6 +21,19 @@ body {
   overflow: visible !important;
   .input_area{
     padding: 2px;
+    .users_empty{
+      border: solid #C0CAD5;
+      border-width: 0px 1px 1px;
+      width: 100%;
+      left: -1px;
+      height: 26px;
+      position: absolute;
+      line-height: 28px;
+      text-align: center;
+      background: #F1F1F1;
+      top: 29px;
+      display: none;
+    }
   }
 }
 
@@ -47,7 +60,7 @@ body {
     pointer-events: auto;
   }
   .users{
-    max-height: 210px; overflow: hidden;
+    max-height: 210px; overflow-y: scroll;
     .user{
       cursor: pointer;
       display: block;
