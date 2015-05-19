@@ -6,13 +6,26 @@
 
     var users = users_collection;
     var x = document.getElementById("form_input");
-    x.addEventListener("focus", focus, true);
-    x.addEventListener("focusout", focusout);
+    document.addEventListener("click", domClick, true);
     x.addEventListener("input", inputChange, false);
+    x.addEventListener("click", inputChange, false);
     makeList(users)
 
     var uTransform = users.clone();
-
+    function domClick(event){
+        var trigger = event.target.getAttribute('data-action');
+        var arrowTr = event.target.getAttribute('data-element');
+        if(trigger&&trigger==='show'){
+            if(arrowTr&&arrowTr==='arrow'){
+                var $userListStyle = document.getElementById("users_list");
+                $userListStyle.style.display==='block'? focusout() : focus();
+            } else{
+                focus();
+            }
+        } else {
+            focusout();
+        }
+    }
 
     function makeList(users) {
 
@@ -49,7 +62,6 @@
 
         $.each(uTransform, function (i) {
             var fullName = $(this)[0].full_name.toLowerCase();
-            //console.log(fullName.toLowerCase().indexOf(inputValue.toLowerCase()));
             if (fullName.indexOf(inputValue) !== -1) {
                 newList.push($(this)[0]);
             } else {

@@ -35,6 +35,16 @@ body {
   top: 29px;
   display: none;
 }
+.input_wrapper .input_area .input_arrow {
+  position: absolute;
+  background: url(/styles/img/arr_down.gif) no-repeat 0px 0px;
+  width: 21px;
+  height: 24px;
+  top: 0px;
+  right: 0px;
+  margin: 2px;
+  cursor: pointer;
+}
 .form_input {
   outline: 0;
   background-color: transparent;
