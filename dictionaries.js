@@ -1,3 +1,13 @@
+Object.prototype.switchKeyValue = function (obj) {
+    var new_obj = {};
+    for (var prop in obj) {
+        if(obj.hasOwnProperty(prop)) {
+            new_obj[obj[prop]] = prop;
+        }
+    }
+    return new_obj;
+};
+
 function checkDictionaries(val){
     var output_en_rus ='',
         output_tr_rus ='';
@@ -48,6 +58,7 @@ function checkDictionaries(val){
             'yu':'ю',
             'sh':'ш',
             'ya':'я',
+            'y':'ы',
             'a':'а',
             'b':'б',
             'v':'в',
@@ -72,12 +83,18 @@ function checkDictionaries(val){
             'f':'ф',
             'h':'х'
         };
+
+    var rusToTranslit = this.switchKeyValue(this.tr_rus);
+    var tempTr = '';
+    this.mixed_rus = this.switchKeyValue(this.tr_rus);
     for (var x = 0; x < val.length; x++)
     {
         var c = val.charAt(x);
         output_en_rus = output_en_rus+this.eng_rus[c];
         output_tr_rus = output_tr_rus+this.tr_rus[c];
-        //console.log(c);
+        tempTr = tempTr+rusToTranslit[c];
+        //console.log(rusToTranslit[c]);
     }
+    console.log(tempTr);
     return [output_en_rus, output_tr_rus];
 }

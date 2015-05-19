@@ -4,20 +4,20 @@ var users_collection = [
         user_name: 'Peter',
         user_surname: 'TheGreat',
         user_pic: 'styles/img/petr1.jpg',
-        user_edu: 'Д. Зотов'
+        user_info: '1672-1725 '
     },
     {
         user_id: 2,
         user_name: 'Иоан',
         user_surname: 'Васильевич',
         user_pic: 'styles/img/ivan4.jpg',
-        user_edu: 'СПбГУ'
+        user_info: '1530-1584'
     },
     {
-        user_id: 2,
+        user_id: 3,
         user_name: 'Иван',
         user_surname: 'Фаацуч',
         user_pic: 'styles/img/ivan4.jpg',
-        user_edu: 'СПбГУ'
+        user_info: '1420-1453'
     }
 ]
