@@ -19,6 +19,9 @@ body {
   display: block;
   overflow: visible !important;
 }
+.input_wrapper .input_area {
+  padding: 2px;
+}
 .form_input {
   outline: 0;
   background-color: transparent;
@@ -28,6 +31,9 @@ body {
   font-size: 11px;
   color: #777777;
   padding: 4px 6px 6px;
+}
+.form_input:focus .input_area {
+  border-bottom: 1px solid #C0CAD5;
 }
 .users_list {
   display: none;
