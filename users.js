@@ -19,5 +19,12 @@ var users_collection = [
         user_surname: 'Фаацуч',
         user_pic: 'styles/img/ivan4.jpg',
         user_info: '1420-1453'
+    },
+    {
+        user_id: 4,
+        user_name: 'Жо',
+        user_surname: 'Худ',
+        user_pic: 'styles/img/ivan4.jpg',
+        user_info: '1420-1453'
     }
 ]

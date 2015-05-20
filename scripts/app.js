@@ -68,7 +68,7 @@
             enRusValue = dictionaries[0],
             trRusValue = dictionaries[1];
         var newList = [];
-        console.log(dictionaries);
+        //console.log(dictionaries);
         $.each(uTransform, function () {
             var fullName = $(this)[0].full_name.toLowerCase();
             if (fullName.indexOf(inputValue) !== -1) {
