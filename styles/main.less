@@ -48,6 +48,37 @@ body {
       margin: 2px;
       cursor: pointer;
     }
+    .bubble{
+      float: left;
+      padding: 3px 8px 4px;
+      background: #597DA3;
+      border-radius: 2px;
+      color:#fff;
+      padding-right: 23px;
+      position: relative;
+      margin: 5px 2px 0px 2px;
+      .bubble_close{
+        content: '';
+        background-image: url('./img/close.gif');
+        width: 11px;
+        height: 11px;
+        display: block;
+        position: absolute;
+        top:6px;
+        right: 6px;
+        background-position: 0px 11px;
+        opacity: 0.12;
+        cursor: pointer;
+        filter: alpha(opacity=12);
+        -webkit-transition: opacity 200ms linear;
+        -moz-transition: opacity 200ms linear;
+        -o-transition: opacity 200ms linear;
+        transition: opacity 200ms linear;
+        &:hover{
+          opacity: 1;
+        }
+      }
+    }
   }
 }
 
