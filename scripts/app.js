@@ -10,13 +10,17 @@
     };
 
     var users = users_collection;
+    var usersClone = users.clone();
+
     var x = document.getElementById("form_input");
     var $users = document.getElementById("users");
     var $usersEmpty = document.getElementById("users_empty");
     var $userList = document.getElementById("users_list");
+    var $bubbles = document.getElementById("bubblesWrapper");
     document.addEventListener("click", domClick, true);
     x.addEventListener("input", inputChange, false);
     $userList.addEventListener('click', addBubble, false)
+    $bubbles.addEventListener('click', removeBubble, false)
     makeList(users);
 
     var uTransform = users.clone();
@@ -31,21 +35,29 @@
         }
         var clickedTarget = checkEl(e.target);
         if(clickedTarget.getAttribute('data-id')){
-            for(var i=0; i<users.length; i++){
-                if(users[i].user_id==clickedTarget.getAttribute('data-id')){
-                    users.splice(i,1)
+            for(var i=0; i<usersClone.length; i++){
+                if(usersClone[i].user_id==clickedTarget.getAttribute('data-id')){
+                    usersClone.splice(i,1)
                 }
             }
-            //console.log(users);
-            makeList(users);
+            makeList(usersClone);
 
             var newNode = document.createElement('div'),
                 nodeClose = document.createElement('div');
             newNode.innerHTML = clickedTarget.getAttribute('data-name');
             newNode.classList.add("bubble");
+            newNode.setAttribute("bubble-id", clickedTarget.getAttribute('data-id'));
             nodeClose.classList.add("bubble_close");
             document.getElementById("bubblesWrapper").appendChild(newNode).appendChild(nodeClose);
         }
+    }
+    function removeBubble(e){
+        if(e.target.classList[0]==='bubble_close'){
+            var $bubbleToDelete = e.target.parentNode;
+            var idToRetrieve = $bubbleToDelete.getAttribute('data-id')
+            console.log(idToRetrieve);
+        }
+
     }
 
     function domClick(event){
