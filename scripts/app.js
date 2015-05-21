@@ -2,11 +2,15 @@
     Array.prototype.clone = function () {
         return this.slice(0);
     };
-    Object.prototype.showBlock = function () {
+    HTMLElement.prototype.showBlock = function () {
         return this.style.display = "block";
     };
-    Object.prototype.hideBlock = function () {
+    HTMLElement.prototype.hideBlock = function () {
         return this.style.display = "none";
+    };
+    HTMLElement.prototype.appendFirst=function(childNode){
+        if(this.firstChild)this.insertBefore(childNode,this.firstChild);
+        else this.appendChild(childNode);
     };
 
     var users = users_collection;
@@ -14,7 +18,7 @@
 
     var x = document.getElementById("form_input");
     var $users = document.getElementById("users");
-    var $usersEmpty = document.getElementById("users_empty");
+    var $usersEmpty = document.getElementById("u_empty_wrapper");
     var $userList = document.getElementById("users_list");
     var $bubbles = document.getElementById("bubblesWrapper");
     document.addEventListener("click", domClick, true);
@@ -23,8 +27,8 @@
     $bubbles.addEventListener('click', removeBubble, false)
     makeList(users);
 
-    var uTransform = users.clone();
     function addBubble(e){
+
         function checkEl($target){
             if($target.getAttribute('data-id')){
                 return $target
@@ -42,13 +46,16 @@
             }
             makeList(usersClone);
 
-            var newNode = document.createElement('div'),
+            var newNode = document.createElement('span'),
                 nodeClose = document.createElement('div');
             newNode.innerHTML = clickedTarget.getAttribute('data-name');
             newNode.classList.add("bubble");
             newNode.setAttribute("bubble-id", clickedTarget.getAttribute('data-id'));
             nodeClose.classList.add("bubble_close");
-            document.getElementById("bubblesWrapper").appendChild(newNode).appendChild(nodeClose);
+            newNode.appendChild(nodeClose);
+            document.getElementById("bubblesWrapper").appendFirst(newNode);
+            x.value = "";
+            checkBubblesQnt();
         }
     }
     function removeBubble(e){
@@ -58,6 +65,17 @@
             console.log(idToRetrieve);
         }
 
+    }
+
+    function checkBubblesQnt(){
+        var quantity = document.getElementById("bubblesWrapper").getElementsByTagName('span').length;
+        if(quantity>0){
+            document.getElementById("bubble_add").showBlock();
+            x.hideBlock();
+        } else {
+            document.getElementById("bubble_add").hideBlock();
+            x.showBlock();
+        }
     }
 
     function domClick(event){
@@ -72,14 +90,13 @@
             }
         } else  {
             if(user){
-                //console.log(user);
             }
             focusout();
         }
     }
 
     function makeList(users) {
-        console.log(users);
+
         clearBox($users);
         if (users.length === 0) {
             $usersEmpty.showBlock();
@@ -100,10 +117,26 @@
             $usersEmpty.showBlock();
         }
         $userList.showBlock();
+        document.getElementById("bubble_add").hideBlock();
+        x.showBlock();
+        var obsh = document.getElementsByClassName('bubble');
+        var elementsWidth = 0;
+        for(var i=0; i<obsh.length; i++){
+            if(elementsWidth<=280) {
+                elementsWidth += obsh[i].offsetWidth;
+            } else {
+                elementsWidth = obsh[i].offsetWidth;
+                console.log(elementsWidth)
+            }
+            //elementsWidth =  parseInt(elementsWidth) +  parseInt(obsh[i].offsetWidth);
+        }
+        //console.log(elementsWidth)
+        //console.log(elementsWidth)
     }
     function focusout() {
         $userList.hideBlock();
         $usersEmpty.hideBlock();
+        checkBubblesQnt();
     }
 
     function inputChange() {
@@ -113,7 +146,7 @@
             trRusValue = dictionaries[1];
         var newList = [];
         //console.log(dictionaries);
-        $.each(uTransform, function () {
+        $.each(usersClone, function () {
             var fullName = $(this)[0].full_name.toLowerCase();
             if (fullName.indexOf(inputValue) !== -1) {
                 newList.push($(this)[0]);

@@ -21,23 +21,28 @@ body {
   overflow: visible !important;
   .input_area {
     padding: 2px;
-    .users_empty {
-      border: solid #C0CAD5;
-      border-width: 0px 1px 1px;
-      width: 100%;
+    min-height: 30px;
+    overflow-x: hidden;
+    padding-right: 20px;
+    #u_empty_wrapper{
+      z-index: 10;
+      width: 423px;
       left: -1px;
       height: 26px;
       position: absolute;
-      line-height: 28px;
-      text-align: center;
-      background: #F1F1F1;
-      top: 29px;
-      display: none;
-      overflow: hidden;
-      display: block;
-      -moz-box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
-      -webkit-box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
-      box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
+      .users_empty {
+        border: solid #C0CAD5;
+        border-width: 0px 1px 1px;
+        line-height: 28px;
+        text-align: center;
+        background: #F1F1F1;
+        top: 29px;
+        display: none;
+        overflow: hidden;
+        -moz-box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
+        -webkit-box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
+        box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
+      }
     }
     .input_arrow {
       position: absolute;
@@ -47,6 +52,39 @@ body {
       right: 0px;
       margin: 2px;
       cursor: pointer;
+    }
+    .bubble_add{
+      float: left;
+      padding: 3px 8px 4px;
+      background: #e5e8ed;;
+      border-radius: 2px;
+      padding-right: 23px;
+      position: relative;
+      margin: 5px 2px 0px 2px;
+      color: #45688E;
+      display: none;
+      cursor: pointer;
+      .bubble_add_plus{
+        content: '';
+        background-image: url('./img/plus.gif');
+        width: 11px;
+        height: 11px;
+        display: block;
+        position: absolute;
+        top:6px;
+        right: 6px;
+        background-position: 0px 11px;
+        opacity: 0.5;
+        cursor: pointer;
+        filter: alpha(opacity=12);
+        -webkit-transition: opacity 200ms linear;
+        -moz-transition: opacity 200ms linear;
+        -o-transition: opacity 200ms linear;
+        transition: opacity 200ms linear;
+        &:hover{
+          opacity: 1;
+        }
+      }
     }
     .bubble{
       float: left;
@@ -95,6 +133,7 @@ body {
 }
 
 .users_list {
+  z-index: 1000;
   display: none;
   width: 421px;
   overflow: hidden;
