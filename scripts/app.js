@@ -258,27 +258,6 @@
                 }
             }
         }
-
-        /*var getJSON = function(url, successHandler, errorHandler) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('get', url, true);
-            xhr.responseType = 'json';
-            xhr.onload = function() {
-                var status = xhr.status;
-                if (status == 200) {
-                    successHandler && successHandler(xhr.response);
-                } else {
-                    errorHandler && errorHandler(status);
-                }
-            };
-            xhr.send();
-        };
-
-        getJSON('http://localhost:5001/users/search/'+inputValue, function(data) {
-            console.log(data);
-        }, function(status) {
-        });*/
-
         makeList(newList);
         focus();
 
@@ -296,10 +275,10 @@
                         for (var i=0; i<response.length; i++){
                          newList.push(response[i]);
                          }
+                        makeList(newList);
+                        focus();
                     }
                 }
-                makeList(newList);
-                focus();
             };
             xhr.send();
         }
