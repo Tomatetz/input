@@ -1,4 +1,6 @@
 (function () {
+    var multiselect = true;
+
     Array.prototype.clone = function () {
         return this.slice(0);
     };
@@ -12,68 +14,104 @@
         if(this.firstChild)this.insertBefore(childNode,this.firstChild);
         else this.appendChild(childNode);
     };
+    Node.prototype.chainableAppendChild=function (newChild) {
+        this.appendChild(newChild)
+        return this
+    }
 
     var users = users_collection;
     var usersClone = users.clone();
+
+    function selectType(e){
+        if(multiselect==true){
+            return addBubble(e)
+        } else {
+            return addSingleUser(e)
+        }
+    }
 
     var x = document.getElementById("form_input");
     var $users = document.getElementById("users");
     var $usersEmpty = document.getElementById("u_empty_wrapper");
     var $userList = document.getElementById("users_list");
     var $bubbles = document.getElementById("bubblesWrapper");
-    document.addEventListener("click", domClick, true);
+    document.addEventListener("click", domClick, false);
     x.addEventListener("input", inputChange, false);
-    $userList.addEventListener('click', addBubble, false)
+    $userList.addEventListener('click', selectType, false)
     $bubbles.addEventListener('click', removeBubble, false)
     makeList(users);
 
-    function addBubble(e){
 
-        function checkEl($target){
-            if($target.getAttribute('data-id')){
-                return $target
-            }
-            else {
-                return checkEl($target.parentNode)
-            }
+
+    function checkEl($target){
+        if($target.getAttribute('data-id')){
+            return $target
         }
+        else {
+            return checkEl($target.parentNode)
+        }
+    }
+    function addBubble(e){
         var clickedTarget = checkEl(e.target);
         if(clickedTarget.getAttribute('data-id')){
-            for(var i=0; i<usersClone.length; i++){
-                if(usersClone[i].user_id==clickedTarget.getAttribute('data-id')){
-                    usersClone.splice(i,1)
-                }
-            }
-            makeList(usersClone);
 
             var newNode = document.createElement('span'),
                 nodeClose = document.createElement('div');
             newNode.innerHTML = clickedTarget.getAttribute('data-name');
             newNode.classList.add("bubble");
-            newNode.setAttribute("bubble-id", clickedTarget.getAttribute('data-id'));
+            newNode.setAttribute("data-id", clickedTarget.getAttribute('data-id'));
             nodeClose.classList.add("bubble_close");
             newNode.appendChild(nodeClose);
             document.getElementById("bubblesWrapper").appendFirst(newNode);
             x.value = "";
+            makeList(remakeUsersList());
             checkBubblesQnt();
         }
     }
     function removeBubble(e){
         if(e.target.classList[0]==='bubble_close'){
             var $bubbleToDelete = e.target.parentNode;
-            var idToRetrieve = $bubbleToDelete.getAttribute('data-id')
-            console.log(idToRetrieve);
+            $bubbleToDelete.parentNode.removeChild($bubbleToDelete);
+            makeList(remakeUsersList());
+            checkBubblesQnt();
         }
-
     }
-
+    function addSingleUser(e){
+        var clickedTarget = checkEl(e.target),
+            targetId=clickedTarget.getAttribute('data-id');
+        clickedTarget.setAttribute('class', 'user singleUser')
+        if(targetId){
+            clearBox(document.getElementById("bubblesWrapper"))
+            document.getElementById("bubblesWrapper").appendFirst(clickedTarget);
+            x.value = "";
+            makeList(remakeUsersList());
+        }
+    }
+    function remakeUsersList(){
+        usersClone = users.clone();
+        var bubbles = document.getElementsByClassName("bubble").length!=0? document.getElementsByClassName("bubble"): document.getElementsByClassName("singleUser");
+        var bubblesId=[];
+        for(var i=0; i<bubbles.length; i++){
+            bubblesId.push(bubbles[i].getAttribute('data-id'))
+        }
+        for(var bubble=0; bubble<bubblesId.length; bubble++) {
+            for (var user = usersClone.length-1; user >= 0 ; user--) {
+                if (usersClone[user].user_id == bubblesId[bubble]) {
+                    usersClone.splice(user, 1)
+                }
+            }
+        }
+        return usersClone
+    }
     function checkBubblesQnt(){
         var quantity = document.getElementById("bubblesWrapper").getElementsByTagName('span').length;
         if(quantity>0){
             document.getElementById("bubble_add").showBlock();
             x.hideBlock();
         } else {
-            document.getElementById("bubble_add").hideBlock();
+            if(!!document.getElementById("bubble_add")) {
+                document.getElementById("bubble_add").hideBlock();
+            }
             x.showBlock();
         }
     }
@@ -96,18 +134,39 @@
     }
 
     function makeList(users) {
-
         clearBox($users);
         if (users.length === 0) {
             $usersEmpty.showBlock();
         } else {
             $usersEmpty.hideBlock();
-            $.each(users, function (i, user) {
-                user.full_name = user.user_name + ' ' + user.user_surname;
-                $('.users').append('<span><div class="user" data-id="' + user.user_id + '" data-name="' + user.full_name + '"><div class="user_inner">' +
-                '<div class="img_wrapper"><img class="user_img" src="' + user.user_pic + '"></div>' +
-                '<div class="user_name">' + user.full_name + '</div><div class="user_info">' + user.user_info + '</div></div></div></span>')
-            });
+            for(var i=0; i<users.length;i++){
+                users[i].full_name = users[i].user_name + ' ' + users[i].user_surname;
+
+                var userWrapper = document.createElement('span'),
+                    user = document.createElement('div'),
+                    userInner = document.createElement('div'),
+                    imgWrapper = document.createElement('div'),
+                    img = document.createElement('img'),
+                    userName = document.createElement('div'),
+                    userInfo = document.createElement('div');
+                user.setAttribute('class','user');
+                user.setAttribute('data-id',users[i].user_id);
+                user.setAttribute('data-name',users[i].full_name);
+                userInner.setAttribute('class','user_inner');
+                imgWrapper.setAttribute('class','img_wrapper');
+                img.setAttribute('class','user_img');
+                img.setAttribute('src',users[i].user_pic);
+                userName.setAttribute('class','user_name')
+                userName.innerHTML = users[i].full_name;
+                userInfo.setAttribute('class','user_info')
+                userInfo.innerHTML = users[i].user_info;
+
+                imgWrapper.appendChild(img);
+                userInner.chainableAppendChild(imgWrapper).chainableAppendChild(userName).chainableAppendChild(userInfo);
+                user.appendChild(userInner);
+                userWrapper.appendChild(user);
+                document.getElementById('users').appendChild(userWrapper);
+            }
         }
     }
 
@@ -117,7 +176,9 @@
             $usersEmpty.showBlock();
         }
         $userList.showBlock();
-        document.getElementById("bubble_add").hideBlock();
+        if(!!document.getElementById("bubble_add")) {
+            document.getElementById("bubble_add").hideBlock();
+        }
         x.showBlock();
         var obsh = document.getElementsByClassName('bubble');
         var elementsWidth = 0;
@@ -126,12 +187,8 @@
                 elementsWidth += obsh[i].offsetWidth;
             } else {
                 elementsWidth = obsh[i].offsetWidth;
-                console.log(elementsWidth)
             }
-            //elementsWidth =  parseInt(elementsWidth) +  parseInt(obsh[i].offsetWidth);
         }
-        //console.log(elementsWidth)
-        //console.log(elementsWidth)
     }
     function focusout() {
         $userList.hideBlock();
@@ -141,29 +198,26 @@
 
     function inputChange() {
         var inputValue = x.value.toLowerCase(),
-            dictionaries = new checkDictionaries(inputValue),
-            enRusValue = dictionaries[0],
-            trRusValue = dictionaries[1];
+            dictionaries = new checkDictionaries(inputValue);
         var newList = [];
-        //console.log(dictionaries);
-        $.each(usersClone, function () {
-            var fullName = $(this)[0].full_name.toLowerCase();
+        for(var i=0; i<usersClone.length; i++){
+            var fullName = usersClone[i].full_name.toLowerCase();
             if (fullName.indexOf(inputValue) !== -1) {
-                newList.push($(this)[0]);
+                newList.push(usersClone[i]);
             } else {
                 if (fullName.indexOf(dictionaries[0]) !== -1) {
-                    newList.push($(this)[0]);
+                    newList.push(usersClone[i]);
                 } else {
                     if (fullName.indexOf(dictionaries[1]) !== -1) {
-                        newList.push($(this)[0]);
+                        newList.push(usersClone[i]);
                     } else{
                         if (fullName.indexOf(dictionaries[2]) !== -1) {
-                            newList.push($(this)[0]);
+                            newList.push(usersClone[i]);
                         }
                     }
                 }
             }
-        });
+        }
         makeList(newList);
     }
 })();

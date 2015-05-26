@@ -149,7 +149,7 @@ body {
   max-height: 210px;
   overflow-y: scroll;
 }
-.users_list .users .user {
+.user {
   cursor: pointer;
   display: block;
   padding: 0px 6px;
@@ -157,29 +157,29 @@ body {
   clear: both;
   min-height: 32px;
 }
-.users_list .users .user:hover {
+.user:hover {
   margin-top: -1px;
   background: #F1F5F9;
   border: solid #E1E7ED;
   border-width: 1px 0px;
   /*border-bottom: 1px solid #EDEDED;
-        background-color: #C0CAD5;*/
+    background-color: #C0CAD5;*/
 }
-.users_list .users .user:hover .user_inner {
+.user:hover .user_inner {
   border-bottom: 0px;
 }
-.users_list .users .user .user_inner {
+.user .user_inner {
   border-bottom: 1px solid #EDEDED;
   padding: 6px 0px;
   min-height: 32px;
 }
-.users_list .users .user .user_inner .img_wrapper {
+.user .user_inner .img_wrapper {
   width: 38px;
   height: 32px;
   overflow: hidden;
   float: left;
 }
-.users_list .users .user .user_inner .user_img {
+.user .user_inner .user_img {
   vertical-align: top;
   width: 32px;
   height: 32px;
@@ -187,7 +187,7 @@ body {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
 }
-.users_list .users .user .user_inner .user_info {
+.user .user_inner .user_info {
   padding-top: 2px;
   color: #777;
   overflow: hidden;
