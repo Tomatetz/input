@@ -14,7 +14,7 @@ module.exports = function(grunt) {
         express: {
             custom: {
                 options: {
-                    port: 9001,
+                    port: 5001,
                     server: 'server'
                 }
             }
@@ -23,7 +23,7 @@ module.exports = function(grunt) {
             server: {
                 options: {
                     index: 'index.html',
-                    port: 9001
+                    port: 5001
                 }
             }
         },

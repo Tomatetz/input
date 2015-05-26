@@ -29,16 +29,23 @@
             return addSingleUser(e)
         }
     }
+    var x = document.getElementById("form_input"),
+        $users = document.getElementById("users"),
+        $usersEmpty = document.getElementById("u_empty_wrapper"),
+        $userList = document.getElementById("users_list"),
+        $bubbles = document.getElementById("bubblesWrapper");
 
-    var x = document.getElementById("form_input");
-    var $users = document.getElementById("users");
-    var $usersEmpty = document.getElementById("u_empty_wrapper");
-    var $userList = document.getElementById("users_list");
-    var $bubbles = document.getElementById("bubblesWrapper");
-    document.addEventListener("click", domClick, false);
-    x.addEventListener("input", inputChange, false);
-    $userList.addEventListener('click', selectType, false)
-    $bubbles.addEventListener('click', removeBubble, false)
+    if (document.addEventListener) {
+        document.addEventListener("click", domClick, false);
+        x.addEventListener("input", inputChange, false);
+        $userList.addEventListener('click', selectType, false)
+        $bubbles.addEventListener('click', removeBubble, false)
+    } else if (el.attachEvent)  {
+        document.attachEvent('onclick', domClick);
+        x.attachEvent("oninput", inputChange);
+        $userList.attachEvent('onclick', selectType)
+        $bubbles.attachEvent('onclick', removeBubble)
+    }
     makeList(users);
 
 
@@ -218,6 +225,54 @@
                 }
             }
         }
+
+        /*var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:5001/users/search/'+inputValue);
+        xhr.send();
+        if (xhr.status != 200) {
+        } else {
+            console.log(xhr);
+            for (var i=0; i<xhr.responseText.length; i++){
+                newList.push(xhr.responseText[i])
+            }
+        }*/
+        function createRequestObject() {
+            if (typeof XMLHttpRequest === 'undefined') { XMLHttpRequest = function() {
+                try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); }
+                catch(e) {}
+                try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); }
+                catch(e) {}
+                try { return new ActiveXObject("Msxml2.XMLHTTP"); }
+                catch(e) {}
+                try { return new ActiveXObject("Microsoft.XMLHTTP"); }
+                catch(e) {}
+                throw new Error("This browser does not support XMLHttpRequest.");
+            };
+            }
+            return new XMLHttpRequest();
+        }
+        function doRequest(){
+            req = createRequestObject();
+            if(req){
+                req.open('GET', 'http://localhost:5001/users/search/'+inputValue);
+                req.onreadystatechange = function() {
+                    if (req.readyState==4) {
+                        return(req.responseText);
+                    }
+                }
+                req.send(null);
+                console.log(req);
+                if(req.status == 200) {
+                    return("Status 200");
+                }else{
+                    return("Status != 200");
+                }
+            }else{
+                return("req = false");
+            }
+        }
+
+        console.log(doRequest());
         makeList(newList);
     }
 })();
