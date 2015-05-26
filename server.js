@@ -20,7 +20,11 @@ servr.get('/users/search/', function (req, res, next) {
     res.json(users);
 });
 servr.get('/users/search/:val', function (req, res) {
-    res.json(users);
+    if(req.params.val.length<=2){
+        res.json(users);
+    } else {
+        res.json('');
+    }
 });
 
 

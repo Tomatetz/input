@@ -1,14 +1,12 @@
-{
+[{
   "user_id": 105,
-"user_name": "blah",
-"user_surname": "vlah",
-"user_pic": "styles/img/petr1.jpg",
-"user_info": "1672-1725 "
+"user_name": "Group1",
+"user_pic": "styles/img/none.jpg",
+"user_info": "info for this "
 },
 {
   "user_id": 125,
-"user_name": "aaa",
-"user_surname": "ssssss",
-"user_pic": "styles/img/ivan4.jpg",
-"user_info": "1530-1584"
-}
+"user_name": "Group2",
+"user_pic": "styles/img/none.jpg",
+"user_info": "info for that"
+}]

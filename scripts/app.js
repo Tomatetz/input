@@ -4,19 +4,30 @@
     Array.prototype.clone = function () {
         return this.slice(0);
     };
-    HTMLElement.prototype.showBlock = function () {
-        return this.style.display = "block";
-    };
-    HTMLElement.prototype.hideBlock = function () {
-        return this.style.display = "none";
-    };
-    HTMLElement.prototype.appendFirst=function(childNode){
-        if(this.firstChild)this.insertBefore(childNode,this.firstChild);
-        else this.appendChild(childNode);
-    };
-    Node.prototype.chainableAppendChild=function (newChild) {
-        this.appendChild(newChild)
-        return this
+    var ie8 = false;
+    if(typeof HTMLElement=="undefined"){
+        ie8 = true;
+        Element.prototype.showBlock = function () {
+            return this.style.display = "block";
+        };
+        Element.prototype.hideBlock = function () {
+            return this.style.display = "none";
+        };
+        Element.prototype.appendFirst=function(childNode){
+            if(this.firstChild)this.insertBefore(childNode,this.firstChild);
+            else this.appendChild(childNode);
+        };
+    } else{
+        HTMLElement.prototype.showBlock = function () {
+            return this.style.display = "block";
+        };
+        HTMLElement.prototype.hideBlock = function () {
+            return this.style.display = "none";
+        };
+        HTMLElement.prototype.appendFirst=function(childNode){
+            if(this.firstChild)this.insertBefore(childNode,this.firstChild);
+            else this.appendChild(childNode);
+        };
     }
 
     var users = users_collection;
@@ -40,9 +51,13 @@
         x.addEventListener("input", inputChange, false);
         $userList.addEventListener('click', selectType, false)
         $bubbles.addEventListener('click', removeBubble, false)
-    } else if (el.attachEvent)  {
+    } else if (document.attachEvent)  {
         document.attachEvent('onclick', domClick);
-        x.attachEvent("oninput", inputChange);
+        x.attachEvent("onpropertychange", function(e) {
+            if (e.propertyName === "value") {
+                inputChange(e)
+            }
+        });
         $userList.attachEvent('onclick', selectType)
         $bubbles.attachEvent('onclick', removeBubble)
     }
@@ -51,7 +66,8 @@
 
 
     function checkEl($target){
-        if($target.getAttribute('data-id')){
+        var targetId = ie8? $target.getAttribute('data-id'):$target.getAttribute('data-id');
+        if(targetId){
             return $target
         }
         else {
@@ -59,15 +75,15 @@
         }
     }
     function addBubble(e){
-        var clickedTarget = checkEl(e.target);
+        var clickedTarget = ie8? checkEl(e.srcElement) : checkEl(e.target);
         if(clickedTarget.getAttribute('data-id')){
 
             var newNode = document.createElement('span'),
                 nodeClose = document.createElement('div');
             newNode.innerHTML = clickedTarget.getAttribute('data-name');
-            newNode.classList.add("bubble");
+            newNode.setAttribute('class',"bubble");
             newNode.setAttribute("data-id", clickedTarget.getAttribute('data-id'));
-            nodeClose.classList.add("bubble_close");
+            nodeClose.setAttribute('class',"bubble_close");
             newNode.appendChild(nodeClose);
             document.getElementById("bubblesWrapper").appendFirst(newNode);
             x.value = "";
@@ -76,19 +92,20 @@
         }
     }
     function removeBubble(e){
-        if(e.target.classList[0]==='bubble_close'){
-            var $bubbleToDelete = e.target.parentNode;
+        var $target = ie8?e.srcElement:e.target;
+        if($target.getAttribute('class')==='bubble_close'){
+            var $bubbleToDelete = $target.parentNode;
             $bubbleToDelete.parentNode.removeChild($bubbleToDelete);
             makeList(remakeUsersList());
             checkBubblesQnt();
         }
     }
     function addSingleUser(e){
-        var clickedTarget = checkEl(e.target),
+        var clickedTarget = ie8? checkEl(e.srcElement) : checkEl(e.target),
             targetId=clickedTarget.getAttribute('data-id');
-        clickedTarget.setAttribute('class', 'user singleUser')
+        clickedTarget.setAttribute('class', 'user singleUser');
         if(targetId){
-            clearBox(document.getElementById("bubblesWrapper"))
+            clearBox(document.getElementById("bubblesWrapper"));
             document.getElementById("bubblesWrapper").appendFirst(clickedTarget);
             x.value = "";
             makeList(remakeUsersList());
@@ -96,7 +113,10 @@
     }
     function remakeUsersList(){
         usersClone = users.clone();
-        var bubbles = document.getElementsByClassName("bubble").length!=0? document.getElementsByClassName("bubble"): document.getElementsByClassName("singleUser");
+        var $element = ie8?document.querySelectorAll('.bubble'):document.getElementsByClassName("bubble");
+        var $singleUserElement = ie8?document.querySelectorAll('.singleUser'):document.getElementsByClassName("singleUser");
+
+        var bubbles = $element.length!=0? $element: $singleUserElement;
         var bubblesId=[];
         for(var i=0; i<bubbles.length; i++){
             bubblesId.push(bubbles[i].getAttribute('data-id'))
@@ -124,9 +144,16 @@
     }
 
     function domClick(event){
-        var trigger = event.target.getAttribute('data-action');
-        var arrowTr = event.target.getAttribute('data-element');
-        var user = event.target.getAttribute('data-id');
+        if(ie8){
+            var trigger = event.srcElement.getAttribute('data-action');
+            var arrowTr = event.srcElement.getAttribute('data-element');
+            var user = event.srcElement.getAttribute('data-id');
+        } else {
+            var trigger = event.target.getAttribute('data-action');
+            var arrowTr = event.target.getAttribute('data-element');
+            var user = event.target.getAttribute('data-id');
+        }
+
         if(trigger&&trigger==='show'){
             if(arrowTr&&arrowTr==='arrow'){
                 $userList.style.display==='block'? focusout() : focus();
@@ -142,11 +169,14 @@
 
     function makeList(users) {
         clearBox($users);
-        if (users.length === 0) {
+        if (users&&users.length === 0) {
             $usersEmpty.showBlock();
         } else {
             $usersEmpty.hideBlock();
             for(var i=0; i<users.length;i++){
+                if(users[i].user_surname == undefined){
+                    users[i].user_surname = '';
+                }
                 users[i].full_name = users[i].user_name + ' ' + users[i].user_surname;
 
                 var userWrapper = document.createElement('span'),
@@ -169,7 +199,9 @@
                 userInfo.innerHTML = users[i].user_info;
 
                 imgWrapper.appendChild(img);
-                userInner.chainableAppendChild(imgWrapper).chainableAppendChild(userName).chainableAppendChild(userInfo);
+                userInner.appendChild(imgWrapper)
+                userInner.appendChild(userName)
+                userInner.appendChild(userInfo);
                 user.appendChild(userInner);
                 userWrapper.appendChild(user);
                 document.getElementById('users').appendChild(userWrapper);
@@ -187,7 +219,8 @@
             document.getElementById("bubble_add").hideBlock();
         }
         x.showBlock();
-        var obsh = document.getElementsByClassName('bubble');
+
+        var obsh = ie8? document.querySelectorAll('.bubble'):document.getElementsByClassName('bubble');
         var elementsWidth = 0;
         for(var i=0; i<obsh.length; i++){
             if(elementsWidth<=280) {
@@ -226,54 +259,51 @@
             }
         }
 
-        /*var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:5001/users/search/'+inputValue);
-        xhr.send();
-        if (xhr.status != 200) {
-        } else {
-            console.log(xhr);
-            for (var i=0; i<xhr.responseText.length; i++){
-                newList.push(xhr.responseText[i])
-            }
-        }*/
-        function createRequestObject() {
-            if (typeof XMLHttpRequest === 'undefined') { XMLHttpRequest = function() {
-                try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); }
-                catch(e) {}
-                try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); }
-                catch(e) {}
-                try { return new ActiveXObject("Msxml2.XMLHTTP"); }
-                catch(e) {}
-                try { return new ActiveXObject("Microsoft.XMLHTTP"); }
-                catch(e) {}
-                throw new Error("This browser does not support XMLHttpRequest.");
+        /*var getJSON = function(url, successHandler, errorHandler) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', url, true);
+            xhr.responseType = 'json';
+            xhr.onload = function() {
+                var status = xhr.status;
+                if (status == 200) {
+                    successHandler && successHandler(xhr.response);
+                } else {
+                    errorHandler && errorHandler(status);
+                }
             };
+            xhr.send();
+        };
+
+        getJSON('http://localhost:5001/users/search/'+inputValue, function(data) {
+            console.log(data);
+        }, function(status) {
+        });*/
+
+        makeList(newList);
+        focus();
+
+        if(inputValue!==''){
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', 'http://localhost:5001/users/search/'+inputValue, true);
+            xhr.responseType = 'json';
+            if(ie8){
+
             }
-            return new XMLHttpRequest();
-        }
-        function doRequest(){
-            req = createRequestObject();
-            if(req){
-                req.open('GET', 'http://localhost:5001/users/search/'+inputValue);
-                req.onreadystatechange = function() {
-                    if (req.readyState==4) {
-                        return(req.responseText);
+            xhr.onreadystatechange  = function() {
+                if (xhr.readyState == 4 /* complete */) {
+                    if (xhr.status == 200) {
+                        var response = ie8?JSON.parse(xhr.responseText):xhr.response
+                        for (var i=0; i<response.length; i++){
+                         newList.push(response[i]);
+                         }
                     }
                 }
-                req.send(null);
-                console.log(req);
-                if(req.status == 200) {
-                    return("Status 200");
-                }else{
-                    return("Status != 200");
-                }
-            }else{
-                return("req = false");
-            }
+                makeList(newList);
+                focus();
+            };
+            xhr.send();
         }
 
-        console.log(doRequest());
-        makeList(newList);
     }
 })();
 function clearBox($item) {

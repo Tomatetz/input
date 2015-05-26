@@ -30,6 +30,7 @@ body {
   width: 423px;
   left: -1px;
   height: 26px;
+  display: none;
   position: absolute;
 }
 .input_wrapper .input_area #u_empty_wrapper .users_empty {
@@ -39,7 +40,6 @@ body {
   text-align: center;
   background: #F1F1F1;
   top: 29px;
-  display: none;
   overflow: hidden;
   -moz-box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
   -webkit-box-shadow: 0 2px 5px -1px rgba(182, 182, 182, 0.75);
