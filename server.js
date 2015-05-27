@@ -6,6 +6,7 @@ var servr = express();
 servr.disable('etag');
 
 var users = require('./users.json');
+eval(fs.readFileSync('./scripts/dictionary.js')+'');
 
 servr.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,11 +17,8 @@ servr.use(function (req, res, next) {
 });
 
 servr.get('/users/search/:val', function (req, res) {
-    if(req.params.val.length<=2){
-        res.json(users);
-    } else {
-        res.json('');
-    }
+    var param =req.params.val;
+        res.json(checkDictionaries(param, users, 'groups'));
 });
 
 module.exports = servr;

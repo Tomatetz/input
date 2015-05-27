@@ -78,6 +78,8 @@
         if (targetId) {
             clearBox(document.getElementById("bubblesWrapper"));
             document.getElementById("bubblesWrapper").appendFirst(clickedTarget);
+            var $imgWrapper = ie8 ? clickedTarget.querySelectorAll('.img_wrapper') : clickedTarget.getElementsByClassName("img_wrapper");
+            $imgWrapper[0].showBlock();
             x.value = "";
             makeList(remakeUsersList());
         }
@@ -166,6 +168,9 @@
 
                 imgWrapper.appendChild(img);
                 userInner.appendChild(imgWrapper);
+                if (showAvatars !== true) {
+                    imgWrapper.hideBlock();
+                }
                 userInner.appendChild(userName);
                 userInner.appendChild(userInfo);
                 user.appendChild(userInner);
@@ -176,7 +181,7 @@
     }
 
     function focus() {
-        var $usersListLength = $users.getElementsByTagName("img").length;
+        var $usersListLength = $users.getElementsByTagName("span").length;
         if ($usersListLength === 0) {
             $usersEmpty.showBlock();
         }
@@ -204,27 +209,9 @@
     }
 
     function inputChange() {
-        var inputValue = x.value.toLowerCase(),
-            dictionaries = checkDictionaries(inputValue);
-        var newList = [];
-        for (var i = 0; i < usersClone.length; i++) {
-            var fullName = usersClone[i].full_name.toLowerCase();
-            if (fullName.indexOf(inputValue) !== -1) {
-                newList.push(usersClone[i]);
-            } else {
-                if (fullName.indexOf(dictionaries[0]) !== -1) {
-                    newList.push(usersClone[i]);
-                } else {
-                    if (fullName.indexOf(dictionaries[1]) !== -1) {
-                        newList.push(usersClone[i]);
-                    } else {
-                        if (fullName.indexOf(dictionaries[2]) !== -1) {
-                            newList.push(usersClone[i]);
-                        }
-                    }
-                }
-            }
-        }
+        var inputValue = x.value.toLowerCase();
+
+        var newList = checkDictionaries(inputValue, usersClone);
         makeList(newList);
         focus();
 
@@ -233,7 +220,7 @@
             xhr.open('get', 'http://localhost:5001/users/search/' + inputValue, true);
             xhr.responseType = 'json';
             xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 /* complete */) {
+                if (xhr.readyState == 4) {
                     if (xhr.status == 200) {
                         var response = ie8 ? JSON.parse(xhr.responseText) : xhr.response;
                         for (var i = 0; i < response.length; i++) {
