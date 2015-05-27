@@ -14,7 +14,7 @@ function checkDictionaries(val, inputList, type) {
 
     var outputList = [];
     for (var i = 0; i < inputList.length; i++) {
-        if (type = 'group') {
+        if (type == 'groups') {
             var fullName = inputList[i].user_name.toLowerCase();
         } else {
             var fullName = inputList[i].full_name.toLowerCase();
@@ -37,4 +37,3 @@ function checkDictionaries(val, inputList, type) {
     }
     return (outputList);
 }
-
