@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         uglify: {
             my_target: {
                 files: {
-                    'scripts/jquery.min.js': ['./bower_components/jquery/dist/jquery.js']
+                    'scripts/minimized.js': ['./scripts/commons.js','./scripts/dictionary.js']
                 }
             }
         }
@@ -42,6 +42,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('myServer', ['express', 'express-keepalive']);
 
-    grunt.registerTask('default',[]);
+    grunt.registerTask('default',['less','uglify']);
 
 };
