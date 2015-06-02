@@ -56,7 +56,9 @@
             newNode.appendChild(nodeClose);
             document.getElementById("bubblesWrapper").appendFirst(newNode);
             x.value = "";
-            makeList(remakeUsersList());
+
+            var newUsersList = rebuildOutputList(users.clone(), setBubblesIdArray());
+            makeList(newUsersList);
             checkBubblesQnt();
         }
     }
@@ -66,7 +68,9 @@
         if ($target.getAttribute('class') === 'bubble_close') {
             var $bubbleToDelete = $target.parentNode;
             $bubbleToDelete.parentNode.removeChild($bubbleToDelete);
-            makeList(remakeUsersList());
+
+            var newUsersList = rebuildOutputList(users.clone(), setBubblesIdArray());
+            makeList(newUsersList);
             checkBubblesQnt();
         }
     }
@@ -81,22 +85,11 @@
             var $imgWrapper = ie8 ? clickedTarget.querySelectorAll('.img_wrapper') : clickedTarget.getElementsByClassName("img_wrapper");
             $imgWrapper[0].showBlock();
             x.value = "";
-            makeList(remakeUsersList());
+            var newUsersList = rebuildOutputList(users.clone(), setBubblesIdArray());
+            makeList(newUsersList);
         }
     }
 
-    function remakeUsersList() {
-        usersClone = users.clone();
-        var bubblesArray = setBubblesIdArray();
-        for (var bubble = 0; bubble < bubblesArray.length; bubble++) {
-            for (var user = usersClone.length - 1; user >= 0; user--) {
-                if (usersClone[user].user_id == bubblesArray[bubble]) {
-                    usersClone.splice(user, 1);
-                }
-            }
-        }
-        return usersClone;
-    }
     function setBubblesIdArray(){
         var $element = ie8 ? document.querySelectorAll('.bubble') : document.getElementsByClassName("bubble");
         var $singleUserElement = ie8 ? document.querySelectorAll('.singleUser') : document.getElementsByClassName("singleUser");

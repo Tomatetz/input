@@ -24,13 +24,7 @@ servr.post('/users/search/:val', function (req, res) {
     var usersClone = users.slice(0);
     if(req.body!==''){
         var usersIdArray = req.body.split(',');
-        for (var i=0;  i<usersIdArray.length; i++){
-            for(var user=usersClone.length-1; user>=0; user--){
-                if(usersClone[user].user_id==usersIdArray[i]){
-                    usersClone.splice(user, 1);
-                }
-            }
-        }
+        usersClone = rebuildOutputList(usersClone, usersIdArray);
     }
     res.json(checkDictionaries(param, usersClone, 'groups'));
 });

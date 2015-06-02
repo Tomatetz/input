@@ -37,3 +37,14 @@ function checkDictionaries(val, inputList, type) {
     }
     return (outputList);
 }
+
+function rebuildOutputList(arr, idArr){
+    for (var i=0;  i<idArr.length; i++){
+        for(var user=arr.length-1; user>=0; user--){
+            if(arr[user].user_id==idArr[i]){
+                arr.splice(user, 1);
+            }
+        }
+    }
+    return arr
+}
