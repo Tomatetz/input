@@ -73,7 +73,7 @@ body {
   height: 11px;
   display: block;
   position: absolute;
-  top: 6px;
+  top: 5px;
   right: 6px;
   background-position: 0px 11px;
   opacity: 0.5;
@@ -104,7 +104,7 @@ body {
   height: 11px;
   display: block;
   position: absolute;
-  top: 6px;
+  top: 5px;
   right: 6px;
   background-position: 0px 11px;
   opacity: 0.12;
@@ -193,4 +193,11 @@ body {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+#multiselect {
+  position: absolute;
+}
+#show_photo {
+  position: absolute;
+  left: 150px;
 }

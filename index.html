@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=8">
     <link rel="stylesheet" href="styles/main.min.css">
-    <script>
-        var multiselect = true;
-        var showAvatars = true;
-    </script>
     <script src="scripts/commons.js"></script>
     <script src="scripts/dictionary.js"></script>
     <title>Input</title>
 </head>
 <body>
+<div>
+    <form id="multiselect">
+        <input type="radio" name="select" value="multi" checked> Multiselect<Br>
+        <input type="radio" name="select" value="single"> Singleselect
+    </form>
+    <form id="show_photo">
+        <input type="radio" name="photo" id="show_image" value="show" checked> Show photo<Br>
+        <input type="radio" name="photo" id="hide_image" value="hide"> Hide photo
+    </form>
+</div>
 <div class="input_wrapper" id="input_wrapper" placeholder="">
     <div class="input_area" id="input_area"  data-action="show">
-        <div class="bubblesWrapper" id="bubblesWrapper"><div class="bubble_add" id="bubble_add"  data-action="show" >Добавить<div class="bubble_add_plus"  data-action="show"></div></div></div>
+        <div class="bubblesWrapper" id="bubblesWrapper"><div id="bubbles"></div><div id="singleUserWrapper"></div><div class="bubble_add" id="bubble_add"  data-action="show" >Добавить<div class="bubble_add_plus"  data-action="show"></div></div></div>
         <input type="text" class="form_input" placeholder="Введите имя друга или email" data-action="show" id="form_input" autofocus >
         <div id="input_arrow" class="input_arrow"><img src="styles/img/arr_down.gif" data-action="show" data-element="arrow" /></div>
         <div id="u_empty_wrapper">

@@ -1,19 +1,56 @@
 (function () {
     var users = users_collection;
     var usersClone = users.clone();
+    var multiselect = checkMultiSelect();
+    function checkMultiSelect(){
+        var radios = document.getElementsByName('select');
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                return radios[i].value;
+                break;
+            }
+        }
+    }
+    function checkShowingImages(){
+        var radios = document.getElementsByName('photo');
+        var images = ie8 ? document.querySelectorAll('.img_wrapper') : document.getElementsByName('img_wrapper');
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                for (var j = 0, length = images.length; j < length; j++) {
+                if(radios[i].value !== 'show') {
+                    images[j].hideBlock()
+                }
+                else {
+                        images[j].showBlock()
+                }
+                }
+                return radios[i].value;
+                break;
+            }
+        }
+    }
 
     function selectType(e) {
-        if (multiselect === true) {
+        if (multiselect === 'multi') {
+            var wrapper = document.getElementById("singleUserWrapper")
+            while ( wrapper.firstChild ) wrapper.removeChild( wrapper.firstChild );
             return addBubble(e);
         } else {
+            var bubbles = document.getElementById('bubbles');
+            while (bubbles.firstChild) {
+                bubbles.removeChild(bubbles.firstChild);
+            }
             return addSingleUser(e);
         }
     }
+
 
     var x = document.getElementById("form_input"),
         $users = document.getElementById("users"),
         $usersEmpty = document.getElementById("u_empty_wrapper"),
         $userList = document.getElementById("users_list"),
+        showImage = document.getElementById("show_image"),
+        hideImage = document.getElementById("hide_image"),
         $bubbles = document.getElementById("bubblesWrapper");
 
     if (document.addEventListener) {
@@ -21,6 +58,8 @@
         x.addEventListener("input", inputChange, false);
         $userList.addEventListener('click', selectType, false);
         $bubbles.addEventListener('click', removeBubble, false);
+        showImage.addEventListener('click', checkShowingImages, false);
+        hideImage.addEventListener('click', checkShowingImages, false);
     } else if (document.attachEvent) {
         document.attachEvent('onclick', domClick);
         x.attachEvent("onpropertychange", function (e) {
@@ -54,7 +93,7 @@
             newNode.setAttribute("data-id", clickedTarget.getAttribute('data-id'));
             nodeClose.setAttribute('class', "bubble_close");
             newNode.appendChild(nodeClose);
-            document.getElementById("bubblesWrapper").appendFirst(newNode);
+            document.getElementById("bubbles").appendFirst(newNode);
             x.value = "";
 
             var newUsersList = rebuildOutputList(users.clone(), setBubblesIdArray());
@@ -80,8 +119,11 @@
             targetId = clickedTarget.getAttribute('data-id');
         clickedTarget.setAttribute('class', 'user singleUser');
         if (targetId) {
-            clearBox(document.getElementById("bubblesWrapper"));
-            document.getElementById("bubblesWrapper").appendFirst(clickedTarget);
+            //clearBox(document.getElementById("bubblesWrapper"));
+            var wrapper = document.getElementById("singleUserWrapper")
+            while ( wrapper.firstChild ) wrapper.removeChild( wrapper.firstChild );
+
+            wrapper.appendFirst(clickedTarget);
             var $imgWrapper = ie8 ? clickedTarget.querySelectorAll('.img_wrapper') : clickedTarget.getElementsByClassName("img_wrapper");
             $imgWrapper[0].showBlock();
             x.value = "";
@@ -99,12 +141,11 @@
         for (var i = 0; i < bubbles.length; i++) {
             bubblesId.push(bubbles[i].getAttribute('data-id'));
         }
-        //console.log(bubblesId);
         return bubblesId
     }
 
     function checkBubblesQnt() {
-        var quantity = document.getElementById("bubblesWrapper").getElementsByTagName('span').length;
+        var quantity = document.getElementById("bubbles").getElementsByTagName('span').length;
         if (quantity > 0) {
             document.getElementById("bubble_add").showBlock();
             x.hideBlock();
@@ -118,6 +159,7 @@
 
     function domClick(event) {
         var $srcElem = ie8 ? event.srcElement : event.target;
+        multiselect = checkMultiSelect();
 
         var trigger = $srcElem.getAttribute('data-action'),
             arrowTr = $srcElem.getAttribute('data-element');
@@ -157,6 +199,7 @@
                 user.setAttribute('data-name', users[i].full_name);
                 userInner.setAttribute('class', 'user_inner');
                 imgWrapper.setAttribute('class', 'img_wrapper');
+                imgWrapper.setAttribute('name', 'img_wrapper');
                 img.setAttribute('class', 'user_img');
                 img.setAttribute('src', users[i].user_pic);
                 userName.setAttribute('class', 'user_name');
@@ -166,8 +209,11 @@
 
                 imgWrapper.appendChild(img);
                 userInner.appendChild(imgWrapper);
-                if (showAvatars !== true) {
+
+                if (checkShowingImages() == 'hide') {
                     imgWrapper.hideBlock();
+                } else {
+                    imgWrapper.showBlock();
                 }
                 userInner.appendChild(userName);
                 userInner.appendChild(userInfo);
@@ -208,8 +254,9 @@
 
     function inputChange() {
         var inputValue = x.value.toLowerCase();
+        var newUsersList = rebuildOutputList(users.clone(), setBubblesIdArray()),
+            newList = checkDictionaries(inputValue, newUsersList);
 
-        var newList = checkDictionaries(inputValue, usersClone);
         makeList(newList);
         focus();
 
@@ -220,7 +267,12 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4) {
                     if (xhr.status == 200) {
-                        var response = ie8 ? JSON.parse(xhr.responseText) : xhr.response;
+                        var response = ie8 ? xhr.responseText : xhr.response;
+
+                        if(typeof response == 'string') {
+                            response = JSON.parse(response)
+                        }
+                        console.log(response);
                         for (var i = 0; i < response.length; i++) {
                             newList.push(response[i]);
                         }
