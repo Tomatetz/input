@@ -1,5 +1,6 @@
 
 var fs = require('fs');
+var bodyParser =  require("body-parser");
 var express = require('express');
 var servr = express();
 
@@ -16,9 +17,22 @@ servr.use(function (req, res, next) {
     next();
 });
 
-servr.get('/users/search/:val', function (req, res) {
+servr.use( bodyParser.text() );
+
+servr.post('/users/search/:val', function (req, res) {
     var param =req.params.val;
-        res.json(checkDictionaries(param, users, 'groups'));
+    var usersClone = users.slice(0);
+    if(req.body!==''){
+        var usersIdArray = req.body.split(',');
+        for (var i=0;  i<usersIdArray.length; i++){
+            for(var user=usersClone.length-1; user>=0; user--){
+                if(usersClone[user].user_id==usersIdArray[i]){
+                    usersClone.splice(user, 1);
+                }
+            }
+        }
+    }
+    res.json(checkDictionaries(param, usersClone, 'groups'));
 });
 
 module.exports = servr;

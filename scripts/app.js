@@ -87,6 +87,17 @@
 
     function remakeUsersList() {
         usersClone = users.clone();
+        var bubblesArray = setBubblesIdArray();
+        for (var bubble = 0; bubble < bubblesArray.length; bubble++) {
+            for (var user = usersClone.length - 1; user >= 0; user--) {
+                if (usersClone[user].user_id == bubblesArray[bubble]) {
+                    usersClone.splice(user, 1);
+                }
+            }
+        }
+        return usersClone;
+    }
+    function setBubblesIdArray(){
         var $element = ie8 ? document.querySelectorAll('.bubble') : document.getElementsByClassName("bubble");
         var $singleUserElement = ie8 ? document.querySelectorAll('.singleUser') : document.getElementsByClassName("singleUser");
 
@@ -95,14 +106,8 @@
         for (var i = 0; i < bubbles.length; i++) {
             bubblesId.push(bubbles[i].getAttribute('data-id'));
         }
-        for (var bubble = 0; bubble < bubblesId.length; bubble++) {
-            for (var user = usersClone.length - 1; user >= 0; user--) {
-                if (usersClone[user].user_id == bubblesId[bubble]) {
-                    usersClone.splice(user, 1);
-                }
-            }
-        }
-        return usersClone;
+        //console.log(bubblesId);
+        return bubblesId
     }
 
     function checkBubblesQnt() {
@@ -217,7 +222,7 @@
 
         if (inputValue !== '') {
             var xhr = new XMLHttpRequest();
-            xhr.open('get', 'http://localhost:5001/users/search/' + inputValue, true);
+            xhr.open('post', 'http://localhost:5001/users/search/' + inputValue, true);
             xhr.responseType = 'json';
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4) {
@@ -231,7 +236,7 @@
                     }
                 }
             };
-            xhr.send();
+            xhr.send(setBubblesIdArray().join());
         }
     }
 })();
